@@ -4,7 +4,8 @@ node_js:
   - "12"
 cache: npm
 branches:
-  only: - master 
+  only: 
+    - master 
 # build master branch only
 script:
   - hexo generate
@@ -15,4 +16,4 @@ deploy:
   keep-history: true
   on:
     branch: master
-local-dir: public
+  local-dir: public
