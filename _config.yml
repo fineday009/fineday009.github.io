@@ -143,7 +143,7 @@ music:
   volume: 0.7       # 默认音量，请注意播放器会记忆用户设置，用户手动设置音量后默认音量即失效
   listFolded: true  # 列表默认折叠
 
-url: http://fineday009.github.io 
+url: https://fineday009.github.io 
 root: / 
 deploy: 
   type: 'git' 
