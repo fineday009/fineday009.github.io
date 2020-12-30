@@ -7,7 +7,7 @@ top: true
 cover: true
 coverImg: /images/1.jpg
 password: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92
-toc: false
+toc: true
 mathjax: false
 summary: 利用hexo实现博客壳子，利用git-pages外网托管博客，利用travis-ci实现了本地git push后博客分钟级自动部署。
 categories: hexo
