@@ -97,7 +97,7 @@ deploy:
 ```
 ![GH_TOKEN配置](/images/travis-ci-fineday009.png)
 
-### PS：配置评论区gittalk
+## PS：配置评论区gittalk
 编辑themes/hexo-theme-matery/_config.yml，增加如下配置。owner和admin都填github的账号，repo是为了存放评论而建的github的新仓库名，oauth的clientid和secret需要在github生成。
 ```
 gitalk:
