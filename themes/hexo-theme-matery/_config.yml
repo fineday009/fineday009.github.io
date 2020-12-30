@@ -294,8 +294,8 @@ postCalendar: true
 # the Gitalk config，default disabled # Gitalk 评论模块的配置，默认为不激活
 gitalk:
   enable: true #默认的是false，没有打开
-  owner: 'github的用户名，不用改成小写'
-  repo: 'fineday009.github.io'
+  owner: 'fineday009'
+  repo: 'fineday009.github.io.comments'
   oauth:
     clientId: '61aa04ff5aef6133e5a0'
     clientSecret: 'b81fb271bb03c7b1e63408537ce5a7e870cdecd5'
