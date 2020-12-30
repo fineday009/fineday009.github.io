@@ -299,7 +299,7 @@ gitalk:
   oauth:
     clientId: '61aa04ff5aef6133e5a0'
     clientSecret: 'b81fb271bb03c7b1e63408537ce5a7e870cdecd5'
-  admin: ['StickTaTa']
+  admin: ['fineday009']
 
 # the Gitment config，default disabled
 # Gitment 评论模块的配置，默认为不激活
