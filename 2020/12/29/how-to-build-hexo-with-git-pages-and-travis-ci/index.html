@@ -417,7 +417,7 @@ INFO  Hexo is running at http://localhost:4000 . Press Ctrl+C to stop.<span aria
 <p>从我搜索的结果来看，网上的主题五花八门，很多人封装了自己的主题，并放在了hexo的官网：<a target="_blank" rel="noopener" href="https://hexo.io/themes/%E3%80%82">https://hexo.io/themes/。</a></p>
 <p>我大概随机点了几十个主题，总感觉有不满意。偶然看到hexo-theme-matery的主题，吸引了我的注意，正好符合我的审美。</p>
 <h2 id="Step-2-of-4，-配置博客主题"><a href="#Step-2-of-4，-配置博客主题" class="headerlink" title="Step 2 of 4， 配置博客主题"></a>Step 2 of 4， 配置博客主题</h2><p>实际就是将hexo-theme-matery这个主题，应用到我的博客上。这里最佳的方式，应该是官网的一个个配置，<a target="_blank" rel="noopener" href="https://github.com/blinkfox/hexo-theme-matery%E3%80%82">https://github.com/blinkfox/hexo-theme-matery。</a><br>直接follow后，就能完成。</p>
-<p>其中有一些插件和步骤不一定要做，取决于你的需要。例如我不需要RSS，这时候不安装rss插件即可。附我最后的效果图<br><img src="/source/images/iceelocalblog-with-theme.png" alt="本地博客接入主题"></p>
+<p>其中有一些插件和步骤不一定要做，取决于你的需要。例如我不需要RSS，这时候不安装rss插件即可。附我最后的效果图<br><img src="/images/iceelocalblog-with-theme.png" alt="本地博客接入主题"></p>
 <h2 id="Step-3-of-4，-接入git-pages"><a href="#Step-3-of-4，-接入git-pages" class="headerlink" title="Step 3 of 4， 接入git-pages"></a>Step 3 of 4， 接入git-pages</h2><p>这一步是想在外网通过域名直接访问我的博客，而不仅仅是通过<a href="http://localhost:4000这种方式。接入git-pages主要做2件事，新建github仓库并与本地的博客内容关联">http://localhost:4000这种方式。接入git-pages主要做2件事，新建github仓库并与本地的博客内容关联</a>(git init)、在github页面上配置好git-pages。<br>我们将本地博客代码git push到github，通常过几分钟就能访问。例如我的blog：fineday009.github.io就是这样。</p>
 <p>但目前又面临一个情况：每次本地修改完，需要调用hexo的命令去专门部署。能不能做成git push后，什么都不用管，坐等博客自动更新好。travis-ci就能完成这样的效果。</p>
 <h2 id="Step-4-of-4，-接入travis-ci"><a href="#Step-4-of-4，-接入travis-ci" class="headerlink" title="Step 4 of 4， 接入travis-ci"></a>Step 4 of 4， 接入travis-ci</h2><p>这里要做2件事，travis-ci绑定github的博客仓库、博客根目录配置.travis-ci.yml文件。<br>第一步实现效果如图。</p>
@@ -441,7 +441,7 @@ deploy:
   on:
     branch: master
   local-dir: public<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="../images/travis-ci-fineday009.png" alt="GH_TOKEN配置"></p>
+<p><img src="/images/travis-ci-fineday009.png" alt="GH_TOKEN配置"></p>
 
                 
             </div>
