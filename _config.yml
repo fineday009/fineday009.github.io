@@ -149,5 +149,3 @@ deploy:
   type: 'git' 
   #repo: git@github.com:fineday009/fineday009.github.io
   branch: gh-pages
-
-
