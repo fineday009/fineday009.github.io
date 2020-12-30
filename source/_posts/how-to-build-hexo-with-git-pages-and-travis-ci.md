@@ -60,7 +60,7 @@ hexo 默认是landscape的主题，比较朴素，其实也够用了。但我还
 直接follow后，就能完成。
 
 其中有一些插件和步骤不一定要做，取决于你的需要。例如我不需要RSS，这时候不安装rss插件即可。附我最后的效果图
-![本地博客接入主题](/source/images/iceelocalblog-with-theme.png)
+![本地博客接入主题](/images/iceelocalblog-with-theme.png)
 
 
 ## Step 3 of 4， 接入git-pages
@@ -95,4 +95,4 @@ deploy:
     branch: master
   local-dir: public
 ```
-![GH_TOKEN配置](../images/travis-ci-fineday009.png)
+![GH_TOKEN配置](/images/travis-ci-fineday009.png)
