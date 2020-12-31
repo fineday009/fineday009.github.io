@@ -17,7 +17,7 @@ tags:
   - travis-ci
 ---
 
-## Step 1 of 4，利用hexo把博客壳子打起来
+## Step 1 of 4 利用hexo初始化博客
 
 ### 安装npm
 - npm也就是node package manager，是node.js的依赖包管理工具，安装node后就自带了。
@@ -31,7 +31,8 @@ brew install node
 v14.15.3
 ```
 
-### 安装hexo。原封不动，照抄官网的命令即可。
+### 安装hexo
+原封不动，照抄官网的命令即可。
 ```bash
 npm install hexo-cli -g
 hexo init blog
@@ -55,7 +56,7 @@ hexo 默认是landscape的主题，比较朴素，其实也够用了。但我还
 
 我大概随机点了几十个主题，总感觉有不满意。偶然看到hexo-theme-matery的主题，吸引了我的注意，正好符合我的审美。
 
-## Step 2 of 4， 配置博客主题
+## Step 2 of 4 配置博客主题
 实际就是将hexo-theme-matery这个主题，应用到我的博客上。这里最佳的方式，应该是官网的一个个配置，https://github.com/blinkfox/hexo-theme-matery。
 直接follow后，就能完成。
 
@@ -63,13 +64,14 @@ hexo 默认是landscape的主题，比较朴素，其实也够用了。但我还
 ![本地博客接入主题](/images/iceelocalblog-with-theme.png)
 
 
-## Step 3 of 4， 接入git-pages
+## Step 3 of 4 接入git-pages
 这一步是想在外网通过域名直接访问我的博客，而不仅仅是通过http://localhost:4000这种方式。接入git-pages主要做2件事，新建github仓库并与本地的博客内容关联(git init)、在github页面上配置好git-pages。
+
 我们将本地博客代码git push到github，通常过几分钟就能访问。例如我的blog：fineday009.github.io就是这样。
 
 但目前又面临一个情况：每次本地修改完，需要调用hexo的命令去专门部署。能不能做成git push后，什么都不用管，坐等博客自动更新好。travis-ci就能完成这样的效果。
 
-## Step 4 of 4， 接入travis-ci
+## Step 4 of 4 接入travis-ci
 这里要做2件事，travis-ci绑定github的博客仓库、博客根目录配置.travis-ci.yml文件。
 第一步实现效果如图。
 
@@ -97,8 +99,9 @@ deploy:
 ```
 ![GH_TOKEN配置](/images/travis-ci-fineday009.png)
 
+
 ## PS：配置评论区gittalk
-编辑themes/hexo-theme-matery/_config.yml，增加如下配置。owner和admin都填github的账号，repo是为了存放评论而建的github的新仓库名，oauth的clientid和secret需要在github生成。
+- 编辑themes/hexo-theme-matery/_config.yml，增加如下配置。owner和admin都填github的账号，repo是为了存放评论而建的github的新仓库名，oauth的clientid和secret需要在github生成。
 ```
 gitalk:
   enable: true #默认的是false，没有打开
