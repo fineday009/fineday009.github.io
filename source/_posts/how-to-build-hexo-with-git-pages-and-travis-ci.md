@@ -18,7 +18,6 @@ tags:
 ---
 
 ## Step 1 of 4 利用hexo初始化博客
-
 ### 安装npm
 - npm也就是node package manager，是node.js的依赖包管理工具，安装node后就自带了。
 - windows和mac都可以直接从node.js官网下载包，然后本地解压安装，官网：https://nodejs.org/en/，一般安装最新LTS版就好。当然也可以用一些包管理工具安装，例如mac下使用以下命令即可秒装node.js。
@@ -30,6 +29,7 @@ brew install node
 ❯ node -v
 v14.15.3
 ```
+
 
 ### 安装hexo
 原封不动，照抄官网的命令即可。
