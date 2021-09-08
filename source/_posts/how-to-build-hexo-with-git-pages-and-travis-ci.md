@@ -20,7 +20,7 @@ tags:
 ## Step 1 of 4 利用hexo初始化博客
 ### 安装npm
 - npm也就是node package manager，是node.js的依赖包管理工具，安装node后就自带了。
-- windows和mac都可以直接从node.js官网下载包，然后本地解压安装，官网：https://nodejs.org/en/，一般安装最新LTS版就好。当然也可以用一些包管理工具安装，例如mac下使用以下命令即可秒装node.js。
+- windows和mac都可以直接从node.js官网下载包，然后本地解压安装，官网：https://nodejs.org/en/ 一般安装最新LTS版就好。当然也可以用一些包管理工具安装，例如mac下使用以下命令即可秒装node.js。
 ``` bash
 brew install node
 ```
@@ -43,7 +43,7 @@ hexo server
 上边的命令是利用npm下载了一个hexo的client，并利用hexo工具初始化一个博客，名为blog。
 然后进入blog目录，安装node.js依赖，最终调用hexo server命令启动本地的hexo服务。
 
-如果顺利，将看到类似以下的文字，告诉你你的博客已经在本地4000端口启动了，使用http://localhost:4000在浏览器打开就能看到博客首页。
+如果顺利，将看到类似以下的文字，告诉你你的博客已经在本地4000端口启动了，在浏览器打开 http://localhost:4000 就能看到博客首页。
 ```
 ❯ hexo server
 INFO  Validating config
