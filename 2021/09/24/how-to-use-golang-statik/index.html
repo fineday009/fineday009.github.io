@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="使用golang的static工具打包特定资源（文本、图片、二进制等）, Hexo">
+    <meta name="keywords" content="使用golang的statik工具打包，并访问特定资源（文本、图片、二进制等）, Hexo">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>使用golang的static工具打包特定资源（文本、图片、二进制等） | Hexo</title>
+    <title>使用golang的statik工具打包，并访问特定资源（文本、图片、二进制等） | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -317,7 +317,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">使用golang的static工具打包特定资源（文本、图片、二进制等）</h1>
+                    <h1 class="description center-align post-title">使用golang的statik工具打包，并访问特定资源（文本、图片、二进制等）</h1>
                 </div>
             </div>
         </div>
@@ -648,10 +648,8 @@ func prepare() {
 	if exists, _ := PathExists(EMBED_BINARY_DIR); exists == false {
 		err = os.Mkdir(EMBED_BINARY_DIR, os.ModePerm)
 		if err != nil {
-			fmt.Printf("mkdir EMBED_BINARY_DIR:%s failed: %v\n", EMBED_BINARY_DIR, err)
 			os.Exit(1)
 		} else {
-			fmt.Printf("mkdir EMBED_BINARY_DIR:%s succ\n", EMBED_BINARY_DIR)
 			err = os.Chmod(EMBED_BINARY_DIR, os.ModePerm)
 			if err != nil {
 				fmt.Printf("cmmod binary dir %s to %v, err=%v", EMBED_BINARY_DIR, os.ModePerm, err)
@@ -661,7 +659,6 @@ func prepare() {
 
 	err = ioutil.WriteFile(EMBED_BINARY_PATH, content, 0777)
 	if err != nil {
-		fmt.Printf("write to %s failed: %v\n", EMBED_BINARY_PATH, err)
 		os.Exit(1)
 	}
 
@@ -686,7 +683,7 @@ func PathExists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>而<code>xorm</code>用以下函数模拟。要实现的效果就是执行<code>xxx</code>后能自动调起xorm里的代码，即打印”running embed main func.”。</p>
 <pre class="line-numbers language-none"><code class="language-none">package main
 
@@ -973,65 +970,11 @@ content: aaa
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
-            <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;Current
-            </div>
-            <div class="card">
-                <a href="/2021/09/24/how-to-use-golang-statik/">
-                    <div class="card-image">
-                        
-                        <img src="/source/images/xxx.jpg" class="responsive-img" alt="使用golang的static工具打包特定资源（文本、图片、二进制等）">
-                        
-                        <span class="card-title">使用golang的static工具打包特定资源（文本、图片、二进制等）</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            golang的statik工具使用方法
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-24
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/hexo/" class="post-category">
-                                    hexo
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/travis-ci/">
-                        <span class="chip bg-color">travis-ci</span>
-                    </a>
-                    
-                    <a href="/tags/golang%E5%B7%A5%E5%85%B7%E5%BA%93/">
-                        <span class="chip bg-color">golang工具库</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
         <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2021/09/23/hello-world/">
+                <a href="/2021/09/24/hello-world/">
                     <div class="card-image">
                         
                         
@@ -1047,9 +990,9 @@ content: aaa
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-23
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-09-24
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -1057,6 +1000,62 @@ content: aaa
                             
                         </span>
                     </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/12/29/how-to-build-hexo-with-git-pages-and-travis-ci/">
+                    <div class="card-image">
+                        
+                        <img src="/source/images/xxx.jpg" class="responsive-img" alt="用hexo + git-pages + travis-ci搭建个人博客实践">
+                        
+                        <span class="card-title">用hexo + git-pages + travis-ci搭建个人博客实践</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            利用hexo实现博客壳子，利用git-pages外网托管博客，利用travis-ci实现了本地git push后博客分钟级自动部署。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-29
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/hexo/" class="post-category">
+                                    hexo
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/hexo/">
+                        <span class="chip bg-color">hexo</span>
+                    </a>
+                    
+                    <a href="/tags/git-pages/">
+                        <span class="chip bg-color">git-pages</span>
+                    </a>
+                    
+                    <a href="/tags/travis-ci/">
+                        <span class="chip bg-color">travis-ci</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -1257,7 +1256,7 @@ content: aaa
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">2.6k</span>&nbsp;字
+                class="white-color">2.5k</span>&nbsp;字
             
             
             
