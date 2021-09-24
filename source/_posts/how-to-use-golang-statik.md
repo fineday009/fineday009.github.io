@@ -256,3 +256,7 @@ remove tmp binary succeed? true
 content: aaa
 
 ```
+
+## 参考文档
+https://github.com/rakyll/statik
+https://blog.fatedier.com/2016/08/01/compile-assets-into-binary-file-with-statik-in-golang/
