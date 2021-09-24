@@ -16,27 +16,30 @@ tags:
   - travis-ci
 ---
 
-## statik是什么？
-### 官网的介绍
+## 1. statik是什么？
+### 1.1 官网的介绍
 官网：https://github.com/rakyll/statik 是这么描述的："statik allows you to embed a directory of static files into your Go binary to be later served from an http.FileSystem.
 意思是这个statik工具能够将一些静态文件嵌入到go的可执行二进制中，并且能通过http协议来访问这些静态文件。
 
-### 流程图
+### 1.2 流程图
 ![statik使用](/images/statik使用.png)
 
-## 怎么使用
-### 安装
+## 2. 怎么使用
+### 2.1 安装
 ```
 go get github.com/rakyll/statik
 ```
 
-### 使用方式
+### 2.2 使用方式
 使用起来很简单，通过`-src`指定一个目录就可以把整个目录的所有文件打包起来，写入一个叫statik.go的文件里，如果不存在这个文件，则通过`go generate -x`来生成。需要注意，这里的"目录里的所有文件"，是递归的，比如下边的public目录，还有子目录tmp，tmp目录里有一个文件f，则也会包含文件f。
 ```
 statik -src=/path/to/your/project/public
 ```
 
-## 使用实例1：将某个目录下一个文本文件和一张图片，打包到二进制中，启动二进制后通过http访问这两个文件。
+## 3. 实际案例
+### 3.1 使用实例1
+> 将某个目录下一个文本文件和一张图片，打包到二进制中，启动二进制后通过http访问这两个文件。
+
 首先，我们看下目录结构。
 ![statik实例1](/images/statik-1.png)
 关注的重点是`main.go`里的逻辑，第一行是一个go 1.4引入的go generate语法，在`run`主函数之前先执行`go generate -x`，`-x`是打印执行的命令；main函数分2步：第1步是生成一个FileSystem实例，fs.New()这一行代码实际会读取statik目录下的statik.go里的二进制，这些二进制实际上就是静态文件；第2步是暴露一个http端口，用于通过http协议和statik自带的FileSystem访问这2个静态资源。
@@ -91,7 +94,9 @@ Hello World
 
 ```
 
-## 使用实例2：将二进制B嵌入到二进制A中，然后执行A时也能执行B的逻辑。
+### 3.2 使用实例2.
+> 将二进制B嵌入到二进制A中，然后执行A时也能执行B的逻辑。
+
 这种场景笔者在工作当中碰到了，工作中用到的内部后端golang框架，自带了一些命令，如`xxx create`是生成工程目录结构。有个需求是这样的：增加一个`xxx sql2struct`命令，这个命令能够将输入的sql语句，一键转化为golang的struct。笔者在xorm命令行工具看到了`xorm reverse`命令有类似的功能，于是考虑怎么将这个能力融入到内部框架中。
 先看下xorm reverse的文档，看着是可以根据建表语句来生成go语言的struct，于是想到一个思路：能否通过statik工具，将xorm打入到内部框架中的命令行工具`xxx`中。
 ```
@@ -257,6 +262,6 @@ content: aaa
 
 ```
 
-## 参考文档
+## 4. 参考文档
 https://github.com/rakyll/statik
 https://blog.fatedier.com/2016/08/01/compile-assets-into-binary-file-with-statik-in-golang/
