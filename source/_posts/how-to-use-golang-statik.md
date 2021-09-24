@@ -2,10 +2,10 @@
 title: 使用golang的statik工具打包，并访问特定资源（文本、图片、二进制等）
 date: 2021-09-24 00:34:55
 author: ice
-img: /source/images/xxx.jpg
+img: /images/statik-1.jpg
 top: true
 cover: true
-coverImg: /images/1.jpg
+coverImg: /images/statik-1.jpg
 password: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92
 toc: true
 mathjax: false
@@ -21,6 +21,9 @@ tags:
 官网：https://github.com/rakyll/statik 是这么描述的："statik allows you to embed a directory of static files into your Go binary to be later served from an http.FileSystem.
 意思是这个statik工具能够将一些静态文件嵌入到go的可执行二进制中，并且能通过http协议来访问这些静态文件。
 
+### 流程图
+![statik使用](/images/statik使用.png)
+
 ## 怎么使用
 ### 安装
 ```
@@ -33,9 +36,9 @@ go get github.com/rakyll/statik
 statik -src=/path/to/your/project/public
 ```
 
-## 使用示例1：将某个目录下一个文本文件和一张图片，打包到二进制中，启动二进制后通过http访问这两个文件。
+## 使用实例1：将某个目录下一个文本文件和一张图片，打包到二进制中，启动二进制后通过http访问这两个文件。
 首先，我们看下目录结构。
-![statik-1](/images/statik-1.png)
+![statik实例1](/images/statik-1.png)
 关注的重点是`main.go`里的逻辑，第一行是一个go 1.4引入的go generate语法，在`run`主函数之前先执行`go generate -x`，`-x`是打印执行的命令；main函数分2步：第1步是生成一个FileSystem实例，fs.New()这一行代码实际会读取statik目录下的statik.go里的二进制，这些二进制实际上就是静态文件；第2步是暴露一个http端口，用于通过http协议和statik自带的FileSystem访问这2个静态资源。
 ```
 //go:generate statik -src=./public
@@ -88,7 +91,7 @@ Hello World
 
 ```
 
-## 使用示例2：将二进制B嵌入到二进制A中，然后执行A时也能执行B的逻辑。
+## 使用实例2：将二进制B嵌入到二进制A中，然后执行A时也能执行B的逻辑。
 这种场景笔者在工作当中碰到了，工作中用到的内部后端golang框架，自带了一些命令，如`xxx create`是生成工程目录结构。有个需求是这样的：增加一个`xxx sql2struct`命令，这个命令能够将输入的sql语句，一键转化为golang的struct。笔者在xorm命令行工具看到了`xorm reverse`命令有类似的功能，于是考虑怎么将这个能力融入到内部框架中。
 先看下xorm reverse的文档，看着是可以根据建表语句来生成go语言的struct，于是想到一个思路：能否通过statik工具，将xorm打入到内部框架中的命令行工具`xxx`中。
 ```
@@ -132,32 +135,40 @@ import (
 	_ "git.code.oa.com/iceewei/icee_test/common/statik/testStatikFS/statik"
 	"github.com/rakyll/statik/fs"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"os/exec"
 )
 
+const (
+	EMBED_BINARY_DIR = "/tmp/"
+	EMBED_BINARY_PATH = "/tmp/embedmain"
+)
+
 // Before buildling, run go generate.
 func main() {
+
+	// 1. 初始化statik文件系统，携带了statik.go里注册的二进制内容。
 	statikFS, err := fs.New()
 	if err != nil {
-		fmt.Printf("err: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("new statik file system failed.")
 	}
 
-	prepare()
+	// 2. task1: 执行二进制B三个子步骤：新建临时目录放入二进制、执行、移除二进制。
+	prepare(statikFS)
 	execBinary()
 	deleteTmpBinary()
 
+	// 3. task2: 读一个文本文件，打印内容。
 	file, err := statikFS.Open("/a")
 	if err != nil {
-		fmt.Printf("err: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("open file a failed, err=%v", err)
 	}
 
 	content, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Printf("err: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("read file a failed, err=%v", err)
 	}
 	fmt.Printf("content: %s\n", content)
 }
@@ -167,50 +178,37 @@ func deleteTmpBinary() {
 	fmt.Printf("remove tmp binary succeed? %t\n", err == nil)
 }
 
-const (
-	EMBED_BINARY_DIR = "/tmp/"
-	EMBED_BINARY_PATH = "/tmp/embedmain"
-)
-
-func prepare() {
-
-	statikFS, err := fs.New()
-	if err != nil {
-		fmt.Printf("err: %v\n", err)
-		os.Exit(1)
-	}
+func prepare(statikFS http.FileSystem) {
 
 	file, err := statikFS.Open("/embedmain")
 	if err != nil {
-		fmt.Printf("open err: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("open err: %v\n", err)
 	}
 	content, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Printf("read all err: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("read binary err: %v\n", err)
 	}
 
-	if exists, _ := PathExists(EMBED_BINARY_DIR); exists == false {
+	if exists, _ := pathExists(EMBED_BINARY_DIR); exists == false {
 		err = os.Mkdir(EMBED_BINARY_DIR, os.ModePerm)
 		if err != nil {
-			os.Exit(1)
+			log.Fatalf("mkdir EMBED_BINARY_DIR:%s failed: %v\n", EMBED_BINARY_DIR, err)
 		} else {
 			err = os.Chmod(EMBED_BINARY_DIR, os.ModePerm)
 			if err != nil {
-				fmt.Printf("cmmod binary dir %s to %v, err=%v", EMBED_BINARY_DIR, os.ModePerm, err)
+				log.Fatalf("cmmod binary dir %s to %v, err=%v", EMBED_BINARY_DIR, os.ModePerm, err)
 			}
 		}
 	}
 
 	err = ioutil.WriteFile(EMBED_BINARY_PATH, content, 0777)
 	if err != nil {
-		os.Exit(1)
+		log.Fatalf("write to %s failed: %v\n", EMBED_BINARY_PATH, err)
 	}
 
 	err = os.Chmod(EMBED_BINARY_PATH, os.ModePerm)
 	if err != nil {
-		fmt.Printf("cmmod binary path %s to %v, err=%v", EMBED_BINARY_PATH, os.ModePerm, err)
+		log.Fatalf("cmmod binary path %s to %v, err=%v", EMBED_BINARY_PATH, os.ModePerm, err)
 	}
 	fmt.Printf("write to %s sucessfully...\n", EMBED_BINARY_PATH)
 }
@@ -220,7 +218,7 @@ func execBinary() {
 	fmt.Println(string(output), err)
 }
 
-func PathExists(path string) (bool, error) {
+func pathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
 		return true, nil
