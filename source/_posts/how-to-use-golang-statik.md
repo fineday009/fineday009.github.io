@@ -1,5 +1,5 @@
 ---
-title: 使用golang的static工具打包特定资源（文本、图片、二进制等）
+title: 使用golang的statik工具打包，并访问特定资源（文本、图片、二进制等）
 date: 2021-09-24 00:34:55
 author: ice
 img: /source/images/xxx.jpg
@@ -194,10 +194,8 @@ func prepare() {
 	if exists, _ := PathExists(EMBED_BINARY_DIR); exists == false {
 		err = os.Mkdir(EMBED_BINARY_DIR, os.ModePerm)
 		if err != nil {
-			fmt.Printf("mkdir EMBED_BINARY_DIR:%s failed: %v\n", EMBED_BINARY_DIR, err)
 			os.Exit(1)
 		} else {
-			fmt.Printf("mkdir EMBED_BINARY_DIR:%s succ\n", EMBED_BINARY_DIR)
 			err = os.Chmod(EMBED_BINARY_DIR, os.ModePerm)
 			if err != nil {
 				fmt.Printf("cmmod binary dir %s to %v, err=%v", EMBED_BINARY_DIR, os.ModePerm, err)
@@ -207,7 +205,6 @@ func prepare() {
 
 	err = ioutil.WriteFile(EMBED_BINARY_PATH, content, 0777)
 	if err != nil {
-		fmt.Printf("write to %s failed: %v\n", EMBED_BINARY_PATH, err)
 		os.Exit(1)
 	}
 
