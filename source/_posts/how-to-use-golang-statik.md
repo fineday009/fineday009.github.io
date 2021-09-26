@@ -263,5 +263,5 @@ content: aaa
 ```
 
 ## 4. 参考文档
-golang 中使用 statik 将静态资源编译进二进制文件中：https://blog.fatedier.com/2016/08/01/compile-assets-into-binary-file-with-statik-in-golang/
-statik官网：https://github.com/rakyll/statik
+- golang 中使用 statik 将静态资源编译进二进制文件中：https://blog.fatedier.com/2016/08/01/compile-assets-into-binary-file-with-statik-in-golang/
+- statik官网：https://github.com/rakyll/statik
