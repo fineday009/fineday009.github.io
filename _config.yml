@@ -44,6 +44,19 @@ render_drafts: false
 post_asset_folder: false
 relative_link: false
 future: true
+#highlight:
+#  enable: false
+#  line_number: true
+#  auto_detect: false
+#  tab_replace: ''
+#  wrap: true
+#  hljs: false
+#prismjs:
+#  enable: true
+#  preprocess: true
+#  line_number: true
+#  tab_replace: ''
+# enable prismjs
 highlight:
   enable: false
   line_number: true
@@ -99,7 +112,8 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 #theme: landscape
-theme: hexo-theme-matery
+#theme: hexo-theme-matery
+theme: freemind.bithack
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
@@ -167,5 +181,20 @@ url: https://fineday009.github.io
 root: / 
 deploy: 
   type: 'git' 
-  #repo: git@github.com:fineday009/fineday009.github.io
+  repo: git@github.com:fineday009/fineday009.github.io
   branch: gh-pages
+
+category_generator:
+  per_page: 0
+
+tag_generator:
+  per_page: 0
+
+
+
+
+excerpt:
+  depth: 10
+  excerpt_excludes: []
+  more_excludes: []
+  hideWholePostExcerpts: true
