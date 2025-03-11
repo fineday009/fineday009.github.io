@@ -1,0 +1,509 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>使用golang的statik工具打包，并访问特定资源（文本、图片、二进制等） | Hexo</title>
+  <meta name="author" content="John Doe">
+  
+  <meta name="description" content="1. statik是什么？1.1 官网的介绍官网：https://github.com/rakyll/statik 是这么描述的：”statik allows you to embed a directory of static files into your Go binary to be later served from an http.FileSystem.意思是这个statik工具能够将一些静态文件嵌入到go的可执行二进制中，并且能通过http协议来访问这些静态文件。
+1.2 流程图
+2. 怎么使用2.1 安装go get github.com/rakyll/statik
+2.2 使用方式使用起来很简单，通过-src指定一个目录就可以把整个目录的所有文件打包起来，写入一个叫statik.go的文件里，如果不存在这个文件，则通过go generate -x来生成。需要注意，这里的”目录里的所有文件”，是递归的，比如下边的public目录，还有子目录tmp，tmp目录里有一个文件f，则也会包含文件f。"> 
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="使用golang的statik工具打包，并访问特定资源（文本、图片、二进制等）"/>
+  <meta property="og:site_name" content="Hexo"/>
+
+  
+    <meta property="og:image" content="true" />
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-70812759-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-70812759-1');
+</script>
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/">Hexo</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class=""></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class=""></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/atom.xml" title="Subscribe me.">
+			  <i class=""></i>RSS
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> 使用golang的statik工具打包，并访问特定资源（文本、图片、二进制等）</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h2 id="1-statik是什么？"><a href="#1-statik是什么？" class="headerlink" title="1. statik是什么？"></a>1. statik是什么？</h2><h3 id="1-1-官网的介绍"><a href="#1-1-官网的介绍" class="headerlink" title="1.1 官网的介绍"></a>1.1 官网的介绍</h3><p>官网：<a target="_blank" rel="noopener" href="https://github.com/rakyll/statik">https://github.com/rakyll/statik</a> 是这么描述的：”statik allows you to embed a directory of static files into your Go binary to be later served from an http.FileSystem.<br>意思是这个statik工具能够将一些静态文件嵌入到go的可执行二进制中，并且能通过http协议来访问这些静态文件。</p>
+<h3 id="1-2-流程图"><a href="#1-2-流程图" class="headerlink" title="1.2 流程图"></a>1.2 流程图</h3><p><img src="/images/statik%E4%BD%BF%E7%94%A8.png" alt="statik使用"></p>
+<h2 id="2-怎么使用"><a href="#2-怎么使用" class="headerlink" title="2. 怎么使用"></a>2. 怎么使用</h2><h3 id="2-1-安装"><a href="#2-1-安装" class="headerlink" title="2.1 安装"></a>2.1 安装</h3><pre class="line-numbers language-none"><code class="language-none">go get github.com/rakyll/statik<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="2-2-使用方式"><a href="#2-2-使用方式" class="headerlink" title="2.2 使用方式"></a>2.2 使用方式</h3><p>使用起来很简单，通过<code>-src</code>指定一个目录就可以把整个目录的所有文件打包起来，写入一个叫statik.go的文件里，如果不存在这个文件，则通过<code>go generate -x</code>来生成。需要注意，这里的”目录里的所有文件”，是递归的，比如下边的public目录，还有子目录tmp，tmp目录里有一个文件f，则也会包含文件f。</p>
+<pre class="line-numbers language-none"><code class="language-none">statik -src=/path/to/your/project/public<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="3-实际案例"><a href="#3-实际案例" class="headerlink" title="3. 实际案例"></a>3. 实际案例</h2><h3 id="3-1-使用实例1"><a href="#3-1-使用实例1" class="headerlink" title="3.1 使用实例1"></a>3.1 使用实例1</h3><blockquote>
+<p>将某个目录下一个文本文件和一张图片，打包到二进制中，启动二进制后通过http访问这两个文件。</p>
+</blockquote>
+<p>首先，我们看下目录结构。<br><img src="/images/statik-1.png" alt="statik实例1"><br>关注的重点是<code>main.go</code>里的逻辑，第一行是一个go 1.4引入的go generate语法，在<code>run</code>主函数之前先执行<code>go generate -x</code>，<code>-x</code>是打印执行的命令；main函数分2步：第1步是生成一个FileSystem实例，fs.New()这一行代码实际会读取statik目录下的statik.go里的二进制，这些二进制实际上就是静态文件；第2步是暴露一个http端口，用于通过http协议和statik自带的FileSystem访问这2个静态资源。</p>
+<pre class="line-numbers language-none"><code class="language-none">//go:generate statik -src=./public
+
+package main
+
+import (
+	"log"
+	"net/http"
+
+	_ "github.com/rakyll/statik/example/statik"
+	"github.com/rakyll/statik/fs"
+)
+
+// Before buildling, run go generate.
+// Then, run the main program and visit http://localhost:8080/public/hello.txt
+func main() {
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(statikFS)))
+	http.ListenAndServe(":8080", nil)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>访问效果：</p>
+<pre class="line-numbers language-none"><code class="language-none">❯ curl -v  http://localhost:8080/public/hello.txt
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8080 (#0)
+&gt; GET /public/hello.txt HTTP/1.1
+&gt; Host: localhost:8080
+&gt; User-Agent: curl/7.64.1
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 200 OK
+&lt; Accept-Ranges: bytes
+&lt; Content-Length: 13
+&lt; Content-Type: text/plain; charset=utf-8
+&lt; Last-Modified: Tue, 08 Dec 2020 15:44:30 GMT
+&lt; Date: Thu, 23 Sep 2021 16:51:49 GMT
+&lt; 
+Hello World
+
+* Connection #0 to host localhost left intact
+* Closing connection 0
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-2-使用实例2"><a href="#3-2-使用实例2" class="headerlink" title="3.2 使用实例2"></a>3.2 使用实例2</h3><blockquote>
+<p>将二进制B嵌入到二进制A中，然后执行A时也能执行B的逻辑。</p>
+</blockquote>
+<p>这种场景笔者在工作当中碰到了，工作中用到的内部后端golang框架，自带了一些命令，如<code>xxx create</code>是生成工程目录结构。有个需求是这样的：增加一个<code>xxx sql2struct</code>命令，这个命令能够将输入的sql语句，一键转化为golang的struct。笔者在xorm命令行工具看到了<code>xorm reverse</code>命令有类似的功能，于是考虑怎么将这个能力融入到内部框架中。<br>先看下xorm reverse的文档，看着是可以根据建表语句来生成go语言的struct，于是想到一个思路：能否通过statik工具，将xorm打入到内部框架中的命令行工具<code>xxx</code>中。</p>
+<pre class="line-numbers language-none"><code class="language-none">&gt;xorm help reverse
+usage: xorm reverse [-s] driverName datasourceName tmplPath [generatedPath] [tableFilterReg]
+
+according database's tables and columns to generate codes for Go, C++ and etc.
+
+    -s                Generated one go file for every table
+    driverName        Database driver name, now supported four: mysql mymysql sqlite3 postgres
+    datasourceName    Database connection uri, for detail infomation please visit driver's project page
+    tmplPath          Template dir for generated. the default templates dir hasprovide 1 template
+    generatedPath     This parameter is optional, if blank, the default value is models, then will
+                      generated all codes in models dir
+    tableFilterReg    Table name filter regexp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>动手吧，先组织一个目录结构，根目录放了<code>xxx</code>的主逻辑，assets目录放了2个文本文件a（内容是aaa）和b，然后是一个叫<code>embedmain</code>的二进制可执行程序，注意<code>_ "git.code.oa.com/iceewei/icee_test/common/statik/testStatikFS/statik"</code>这一行非常关键，是将打包好的二进制内容引入，fs.New()调用时会用到二进制内容，我们执行main函数时做2件事：执行embedmain的逻辑、读取文本文件a的内容并打印，b文件暂时不用。</p>
+<pre class="line-numbers language-none"><code class="language-none">❯ tree
+.
+├── assets
+│&nbsp;&nbsp; ├── a
+│&nbsp;&nbsp; ├── embedmain
+│&nbsp;&nbsp; └── tmp
+│&nbsp;&nbsp;     └── b
+└── main.go
+
+2 directories, 4 files<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>xxx</code>表示内部框架，对应<code>main.go</code>，这里有个细节：笔者是将内嵌的二进制<code>embedmain</code>先通过statik的FileSytem释放到本地的<code>/tmp</code>目录，然后通过<code>exec.Command函数</code>来调用<code>embedmain</code>的代码逻辑，最后删除掉这个多余的文件。</p>
+<pre class="line-numbers language-none"><code class="language-none">//go:generate statik -src=./assets
+//go:generate go fmt statik/statik.go
+
+package main
+
+import (
+	"fmt"
+	_ "git.code.oa.com/iceewei/icee_test/common/statik/testStatikFS/statik"
+	"github.com/rakyll/statik/fs"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"os/exec"
+)
+
+const (
+	EMBED_BINARY_DIR = "/tmp/"
+	EMBED_BINARY_PATH = "/tmp/embedmain"
+)
+
+// Before buildling, run go generate.
+func main() {
+
+	// 1. 初始化statik文件系统，携带了statik.go里注册的二进制内容。
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatalf("new statik file system failed.")
+	}
+
+	// 2. task1: 执行二进制B三个子步骤：新建临时目录放入二进制、执行、移除二进制。
+	prepare(statikFS)
+	execBinary()
+	deleteTmpBinary()
+
+	// 3. task2: 读一个文本文件，打印内容。
+	file, err := statikFS.Open("/a")
+	if err != nil {
+		log.Fatalf("open file a failed, err=%v", err)
+	}
+
+	content, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Fatalf("read file a failed, err=%v", err)
+	}
+	fmt.Printf("content: %s\n", content)
+}
+
+func deleteTmpBinary() {
+	err := os.Remove(EMBED_BINARY_PATH)
+	fmt.Printf("remove tmp binary succeed? %t\n", err == nil)
+}
+
+func prepare(statikFS http.FileSystem) {
+
+	file, err := statikFS.Open("/embedmain")
+	if err != nil {
+		log.Fatalf("open err: %v\n", err)
+	}
+	content, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Fatalf("read binary err: %v\n", err)
+	}
+
+	if exists, _ := pathExists(EMBED_BINARY_DIR); exists == false {
+		err = os.Mkdir(EMBED_BINARY_DIR, os.ModePerm)
+		if err != nil {
+			log.Fatalf("mkdir EMBED_BINARY_DIR:%s failed: %v\n", EMBED_BINARY_DIR, err)
+		} else {
+			err = os.Chmod(EMBED_BINARY_DIR, os.ModePerm)
+			if err != nil {
+				log.Fatalf("cmmod binary dir %s to %v, err=%v", EMBED_BINARY_DIR, os.ModePerm, err)
+			}
+		}
+	}
+
+	err = ioutil.WriteFile(EMBED_BINARY_PATH, content, 0777)
+	if err != nil {
+		log.Fatalf("write to %s failed: %v\n", EMBED_BINARY_PATH, err)
+	}
+
+	err = os.Chmod(EMBED_BINARY_PATH, os.ModePerm)
+	if err != nil {
+		log.Fatalf("cmmod binary path %s to %v, err=%v", EMBED_BINARY_PATH, os.ModePerm, err)
+	}
+	fmt.Printf("write to %s sucessfully...\n", EMBED_BINARY_PATH)
+}
+
+func execBinary() {
+	output, err := exec.Command(EMBED_BINARY_PATH).CombinedOutput()
+	fmt.Println(string(output), err)
+}
+
+func pathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>而<code>xorm</code>用以下函数模拟。要实现的效果就是执行<code>xxx</code>后能自动调起xorm里的代码，即打印”running embed main func.”。</p>
+<pre class="line-numbers language-none"><code class="language-none">package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	fmt.Println("running embed main func.")
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>首先生成statik.go，执行<code>go generate -x</code>即可，然后go run main.go即可看到效果：</p>
+<pre class="line-numbers language-none"><code class="language-none">❯ go generate -x
+statik -src=./assets
+go fmt statik/statik.go
+❯ go run main.go
+write to /tmp/embedmain sucessfully...
+running embed main func.
+ &lt;nil&gt;
+remove tmp binary succeed? true
+content: aaa
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="4-参考文档"><a href="#4-参考文档" class="headerlink" title="4. 参考文档"></a>4. 参考文档</h2><ul>
+<li>golang 中使用 statik 将静态资源编译进二进制文件中：<a target="_blank" rel="noopener" href="https://blog.fatedier.com/2016/08/01/compile-assets-into-binary-file-with-statik-in-golang/">https://blog.fatedier.com/2016/08/01/compile-assets-into-binary-file-with-statik-in-golang/</a></li>
+<li>statik官网：<a target="_blank" rel="noopener" href="https://github.com/rakyll/statik">https://github.com/rakyll/statik</a></li>
+</ul>
+
+	  <div class="article-footer-copyright">
+
+    本博客采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议(CC BY-NC-SA 4.0) 发布.</a>
+</div>
+
+	</div>
+
+	
+	
+	<div>
+  	<center>
+
+	<div class="pagination">
+
+    
+    
+    <a href="/2025/03/11/hello-world/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/2020/12/29/how-to-build-hexo-with-git-pages-and-travis-ci/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<!--
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+</section>
+
+-->
+	
+	
+	
+	</div> <!-- col-md-9/col-md-12 -->
+
+
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2021-09-24 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    <li><a href="/categories/hexo/">hexo<span>2</span></a></li>
+  </li>
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/travis-ci/">travis-ci<span>2</span></a></li> <li><a href="/tags/golang工具库/">golang工具库<span>1</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	   <a data-toggle="collapse" data-target="#toc"><i class="fa fa-bars"></i></a>
+	   <div id="toc" class="toc collapse in">
+		   <span class="toc-title">Contents</span>
+			<ol class="toc-article"><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#1-statik%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-article-text">1. statik是什么？</span></a><ol class="toc-article-child"><li class="toc-article-item toc-article-level-3"><a class="toc-article-link" href="#1-1-%E5%AE%98%E7%BD%91%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="toc-article-text">1.1 官网的介绍</span></a></li><li class="toc-article-item toc-article-level-3"><a class="toc-article-link" href="#1-2-%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-article-text">1.2 流程图</span></a></li></ol></li><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#2-%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8"><span class="toc-article-text">2. 怎么使用</span></a><ol class="toc-article-child"><li class="toc-article-item toc-article-level-3"><a class="toc-article-link" href="#2-1-%E5%AE%89%E8%A3%85"><span class="toc-article-text">2.1 安装</span></a></li><li class="toc-article-item toc-article-level-3"><a class="toc-article-link" href="#2-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-article-text">2.2 使用方式</span></a></li></ol></li><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#3-%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B"><span class="toc-article-text">3. 实际案例</span></a><ol class="toc-article-child"><li class="toc-article-item toc-article-level-3"><a class="toc-article-link" href="#3-1-%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B1"><span class="toc-article-text">3.1 使用实例1</span></a></li><li class="toc-article-item toc-article-level-3"><a class="toc-article-link" href="#3-2-%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B2"><span class="toc-article-text">3.2 使用实例2</span></a></li></ol></li><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#4-%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="toc-article-text">4. 参考文档</span></a></li></ol>
+		</div>
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+		
+
+	</div>
+	
+		
+
+</div><!-- row -->
+
+<!--
+ -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  
+  &copy; 2025 John Doe's Blog
+  
+      powered by <a href="http://hexo.io/" target="_blank">Hexo</a>.Theme <a href="https://github.com/Ares-X/hexo-theme-freemind.bithack" target="_blank">freemind.bithack</a>  
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>
