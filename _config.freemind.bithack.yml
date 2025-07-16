@@ -81,7 +81,7 @@ waline:
   locale:
     placeholder: 'Comment with Email address will get notification when replied'
 
-# the Gitalk config，default disabled # Gitalk 评论模块的配置，默认为不激活~~~~
+# the Gitalk config，default disabled # Gitalk 评论模块的配置，默认为不激活
 gitalk:
   enable: true #默认的是false，没有打开
   owner: 'fineday009'
