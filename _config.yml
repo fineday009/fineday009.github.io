@@ -7,7 +7,7 @@ title: Hexo
 subtitle: ''
 description: ''
 keywords:
-author: John Doe
+author: Ice Wei
 language: en
 timezone: ''
 
@@ -112,7 +112,7 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 #theme: landscape
-#theme: hexo-theme-matery
+# theme: hexo-theme-matery
 theme: freemind.bithack
 
 # Deployment
@@ -190,11 +190,9 @@ category_generator:
 tag_generator:
   per_page: 0
 
-
-
-
 excerpt:
   depth: 10
   excerpt_excludes: []
   more_excludes: []
   hideWholePostExcerpts: true
+
