@@ -1,4 +1,4 @@
-# Hexo Configuration for icewei master
+# Hexo Configuration for icewei11
 ## Docs: https://hexo.io/docs/configuration.html
 ## Source: https://github.com/hexojs/hexo/
 
@@ -182,7 +182,7 @@ root: /
 deploy: 
   type: 'git' 
   repo: git@github.com:fineday009/fineday009.github.io
-  branch: master
+  branch: gh-pages2
 
 category_generator:
   per_page: 0
