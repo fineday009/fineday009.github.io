@@ -9,7 +9,7 @@ Welcome to icee [Hexo](https://hexo.io/)! This is your very first post. Check [d
 ### Create a new post
 
 ``` bash
-$ hexo new "My New Post"
+$ hexo new "My New Post fffff"
 ```
 
 More info: [Writing](https://hexo.io/docs/writing.html)
